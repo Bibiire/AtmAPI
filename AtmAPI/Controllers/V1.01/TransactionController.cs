@@ -29,7 +29,7 @@ namespace AtmAPI.Controllers.V1._01
         /// </summary>
         /// <param name="registerUser"></param>
         /// <returns></returns>
-        [Authorize]
+        //[Authorize]
         [HttpPost("[action]")]
         [ProducesResponseType(400, Type = typeof(BaseResponse))]
         [ProducesResponseType(200, Type = typeof(BaseResponse))]

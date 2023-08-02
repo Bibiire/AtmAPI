@@ -70,12 +70,12 @@ namespace Application.Services.Implementations
             {
                 return BaseResponse.Failure("99", "Insufficient fund");
             }
-            var newbalance = account.CurrentBalance + request.Amount;
+            var newbalance = account.CurrentBalance - request.Amount;
             _repositoryWrapper.Transaction.Create(new Transaction
             {
                 Amount = request.Amount,
                 UserId = request.UserId,
-                TrandsctionType = "Deposit"
+                TrandsctionType = "Withdrawal"
             });
             account.CurrentBalance = newbalance;
             _repositoryWrapper.AccountDetail.Update(account);
