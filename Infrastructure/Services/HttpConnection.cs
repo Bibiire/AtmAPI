@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RestSharp;
+using System.Net.Http;
 using RestSharp.Authenticators;
 using System;
 using System.Collections.Generic;
@@ -15,44 +16,17 @@ namespace Infrastructure.Services
 {
     public class HttpConnection : IHttpConnection
     {
-        private readonly IHttpClientFactory _httpClientFactory;
+        
         private readonly ILogger<HttpConnection> _logger;
         private DevApiSettings DevApiConfig { get; }
-        public HttpConnection(IHttpClientFactory httpClientFactory, ILogger<HttpConnection> logger, IOptions<DevApiSettings> devApiConfig)
+        public HttpConnection(ILogger<HttpConnection> logger, IOptions<DevApiSettings> devApiConfig)
         {
-            _httpClientFactory = httpClientFactory;
+            
             _logger = logger;
             DevApiConfig = devApiConfig.Value;
         }
 
-        public async Task<T> DevAPIRequest<T>(HttpRequestMessage request, HttpContent content, string client) where T : new()
-        {
-            var httpClient = _httpClientFactory.CreateClient(client);
-
-            var utcdate = DateTime.UtcNow;
-            var timeStamp = utcdate.ToString("yyyy-MM-ddTHH:mm:ss.fff");
-            var xtoken = GetXTokenHeader(utcdate, DevApiConfig.ProductKeys.ClientId, DevApiConfig.ProductKeys.Password);
-            request.Headers.TryAddWithoutValidation("client_id", DevApiConfig.ProductKeys.ClientId);
-            request.Headers.TryAddWithoutValidation("UTCTimestamp", timeStamp);
-            request.Headers.TryAddWithoutValidation("x-token", xtoken);
-            request.Headers.TryAddWithoutValidation("Ocp-Apim-Subscription-Key", DevApiConfig.ProductKeys.SubscriptionKey);
-            request.Content = content;
-            var response = await httpClient.SendAsync(request);
-            string apiResponse = await response.Content.ReadAsStringAsync();
-            _logger.LogInformation($"API Execute Response : {apiResponse}");
-            try
-            {
-                var deserialisedResponse = JsonConvert.DeserializeObject<T>(apiResponse);
-                return deserialisedResponse;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning($"Error occurred while deserilizing response : {ex}");
-                const string message = "Error retrieving response.  Check inner details for more info.";
-                var exception = new Exception(message, ex);
-                throw exception;
-            }
-        }
+        
 
         public async Task<T> WebRequest<T>(string url, object request, string requestType, Dictionary<string, string> headers = null, string authUserName = null, string authPword = null) where T : new()
         {

@@ -1,6 +1,8 @@
 ﻿using Application.ConfigSettings;
 using Application.DTOs;
 using Application.Mappings;
+using Application.Services.Implementations;
+using Application.Services.Interfaces;
 using DataAccess;
 using Domain.Entities;
 using Infrastructure.Helpers;
@@ -140,6 +142,7 @@ namespace AtmAPI
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
+            //services.AddScoped<ITransactionService, TransactionService>();
 
             //----------------------------------------  Configuration Settings -------------------------------------------------//
 

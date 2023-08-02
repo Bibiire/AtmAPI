@@ -12,6 +12,7 @@ namespace Application.Services.Interfaces
     {
         Task<BaseResponse> ChangePassword(string userId, ChangePasswordDTO changePassword);
         Task<BaseResponse> Login(LoginDTO loginDTO);
+        Task<BaseResponse> UserLogin(UserLoginDTO loginDTO);
         Task<BaseResponse> RefreshToken(RefreshTokenDTO refreshToken);
         Task<BaseResponse> RegisterUser(RegisterUserDTO registerUser);
         Task<BaseResponse> ResetPassword(string email, ResetPasswordDTO resetPasswordModel);

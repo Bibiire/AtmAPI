@@ -57,6 +57,24 @@ namespace AtmAPI.Controllers.V1._00
             return BadRequest(loginResponse);
         }
 
+         /// <summary>
+        /// Signin User
+        /// </summary>
+        /// <param name="login"></param>
+        /// <returns></returns>
+        [HttpPost("[action]")]
+        [ProducesResponseType(400, Type = typeof(BaseResponse))]
+        [ProducesResponseType(404, Type = typeof(BaseResponse))]
+        [ProducesResponseType(200, Type = typeof(BaseResponse<LoginResponseDTO>))]
+        public async Task<IActionResult> UserLogin(UserLoginDTO login)
+        {
+            if (!ModelState.IsValid) return BadRequest(ResponseHelper.BuildResponse("30", ModelState));
+            var loginResponse = await _userAuthService.UserLogin(login);
+            if (loginResponse.Code is "00") return Ok(loginResponse);
+            if (loginResponse.Code is "25") return NotFound(loginResponse);
+            return BadRequest(loginResponse);
+        }
+
         
 
         /// <summary>
